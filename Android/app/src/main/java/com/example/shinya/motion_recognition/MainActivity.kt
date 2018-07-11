@@ -39,6 +39,12 @@ class MainActivity : FragmentActivity(), TabHost.OnTabChangeListener, SensorEven
         setupSensorManager()
     }
 
+    fun showResultDialog(result: String){
+        var dialog = ResultDialogFragment()
+        dialog.msg = result
+        dialog.show(supportFragmentManager, "tag")
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         val action = event.action
         val keyCode = event.keyCode
@@ -73,15 +79,17 @@ class MainActivity : FragmentActivity(), TabHost.OnTabChangeListener, SensorEven
     }
 
     fun getSensorData(): String{
-        return sensorDataString
+        val tmp = sensorDataString
+        sensorDataString = ""
+        return tmp
     }
 
     private fun setupSensorManager() {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val accel = sensorManager?.getDefaultSensor(
+        val accel = sensorManager.getDefaultSensor(
                 Sensor.TYPE_ACCELEROMETER)
 
-        sensorManager?.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST)
+        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST)
 
         runnable = object : Runnable {
             override fun run() {
@@ -122,22 +130,22 @@ class MainActivity : FragmentActivity(), TabHost.OnTabChangeListener, SensorEven
 
     private fun addTabFragment(){
         mTabHost = findViewById<View>(android.R.id.tabhost) as TabHost
-        mTabHost!!.setup()
+        mTabHost.setup()
 
         /* Tab1 設定 */
-        val collectionTab = mTabHost!!.newTabSpec("collection")
+        val collectionTab = mTabHost.newTabSpec("collection")
         collectionTab.setIndicator("収集")
         collectionTab.setContent(DummyTabFactory(this))
-        mTabHost!!.addTab(collectionTab)
+        mTabHost.addTab(collectionTab)
 
         // Tab2 設定
-        val recognitionTab = mTabHost!!.newTabSpec("recognition")
+        val recognitionTab = mTabHost.newTabSpec("recognition")
         recognitionTab.setIndicator("認識")
         recognitionTab.setContent(DummyTabFactory(this))
-        mTabHost!!.addTab(recognitionTab)
+        mTabHost.addTab(recognitionTab)
 
         // タブ変更時イベントハンドラ
-        mTabHost!!.setOnTabChangedListener(this)
+        mTabHost.setOnTabChangedListener(this)
 
         // 初期タブ選択
         onTabChanged("collection")
