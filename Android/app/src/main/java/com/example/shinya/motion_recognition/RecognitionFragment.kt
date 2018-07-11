@@ -79,6 +79,20 @@ class RecognitionFragment : Fragment() {
             distances[file.toString()] = distance
         }
         //TODO("クラスタリングしよう")
+        val result = clustering(distances)
+        (activity as MainActivity).showResultDialog(result.key)
+    }
+
+    private fun clustering(distances: HashMap<String, Double>): Map.Entry<String, Double>{
+        val distancesAscMap = distances.toList()
+                .sortedBy { (key, value) -> value }
+                .toMap()
+        var distancesAscArrayList = ArrayList<Map.Entry<String, Double>>()
+
+        for (distance in distancesAscMap) {
+            distancesAscArrayList.add(distance)
+        }
+        return distancesAscArrayList[0]
     }
 
     private val mMessageReceiver = object : BroadcastReceiver() {
