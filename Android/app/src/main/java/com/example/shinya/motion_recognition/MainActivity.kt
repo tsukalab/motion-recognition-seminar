@@ -1,7 +1,6 @@
 package com.example.shinya.motion_recognition
 
 import android.os.Bundle
-
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -9,9 +8,18 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Handler
 import android.support.v4.app.FragmentActivity
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.widget.TabHost
 import android.widget.TabHost.TabContentFactory
+import android.support.v4.content.LocalBroadcastManager
+import android.content.Intent
+
+
+
+
+
 
 class MainActivity : FragmentActivity(), TabHost.OnTabChangeListener, SensorEventListener {
 
@@ -29,6 +37,31 @@ class MainActivity : FragmentActivity(), TabHost.OnTabChangeListener, SensorEven
         setContentView(R.layout.activity_tabhost)
         addTabFragment()
         setupSensorManager()
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        val action = event.action
+        val keyCode = event.keyCode
+        when (keyCode) {
+            KeyEvent.KEYCODE_VOLUME_UP -> {
+                if (action == KeyEvent.ACTION_UP) {
+                    sendBroadcast()
+                }
+                return true
+            }
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                if (action == KeyEvent.ACTION_UP) {
+                    sendBroadcast()
+                }
+                return true
+            }
+            else -> return super.dispatchKeyEvent(event)
+        }
+    }
+
+    private fun sendBroadcast() {
+        val intent = Intent("volume")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     fun startRecordSensor(){
