@@ -2,8 +2,10 @@ package com.example.shinya.motion_recognition
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Debug
 import android.support.v4.app.Fragment
 import android.text.InputType
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +14,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 
 
+
+
 class CollectionFragment : Fragment() {
 
-    private var motionLabelEditText: EditText? = null
-    private var inputMethodManager: InputMethodManager? = null
+    private lateinit var motionLabelEditText: EditText
+    private lateinit var inputMethodManager: InputMethodManager
+    private var isRecording = false
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -32,8 +37,17 @@ class CollectionFragment : Fragment() {
         v.setOnKeyListener { _, keyCode, event ->
             if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
                     && event.action == KeyEvent.ACTION_UP) {
-                val label = motionLabelEditText?.text
 
+                if(isRecording){
+                    val label = motionLabelEditText?.text
+                    (activity as MainActivity).stopRecordSensor()
+                    val sensorData = (activity as MainActivity).getSensorData()
+                    Log.d("sensor", sensorData)
+                    isRecording = false
+                }else {
+                    (activity as MainActivity).startRecordSensor()
+                    isRecording = true
+                }
                 true
             } else false
         }
